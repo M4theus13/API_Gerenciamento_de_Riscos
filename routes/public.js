@@ -30,5 +30,16 @@ router.post('/cadastro', async (req, res) => {
 })
 
 //ROTA logar usuario
+router.post('/login', async (req, res) => {
+  try {
+    const userInfo = req.body
+    const user = await prisma.user.findUnique({
+      where: {email: userInfo.email},
+    })
+
+  } catch (err) {
+    res.status(500).json({message:'erro'}) //resposta para o front
+  }
+})
 
 export default router
