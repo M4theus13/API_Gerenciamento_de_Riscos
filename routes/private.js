@@ -6,7 +6,13 @@ const prisma = new PrismaClient()
 
 router.get('/listar', async (req, res) => {
   try {
-    const user = await prisma.user.findMany() //esconde as informações (esconde o password)
+    const user = await prisma.user.findMany({
+      select: {
+        name: true,
+        email: true,
+        // Sem o campo de senha
+      }
+    }) //esconde as informações (esconde o password)
     res.status(200).json({message: 'usuarios listados', user})
 
   } catch (err) {

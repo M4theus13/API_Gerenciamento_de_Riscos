@@ -23,7 +23,6 @@ router.post('/cadastro', async (req, res) => {
         password: hashPassword,  
       }
     })
-    console.log(usuario)
     res.status(200).json(usuario) //resposta para o front
   } catch (err) {
     res.status(500).json({message:'erro'}) //resposta para o front
