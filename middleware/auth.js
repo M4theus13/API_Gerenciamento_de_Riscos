@@ -15,12 +15,12 @@ const auth = (req, res, next) => {//next é a aprovação para continuar a aplic
 
     const decodedToken = jwt.verify(token.replace('Bearer ', ''), JWT_SECRET)
     req.userId = decodedToken.id //envia o user id para a req
-    next()
 
 
   } catch (err) {
     return res.status(401).json({message: 'Token invalido'})
   }
+  next()
 
 }
 
