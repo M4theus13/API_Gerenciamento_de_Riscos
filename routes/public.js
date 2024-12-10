@@ -2,6 +2,7 @@ import express from "express"
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import verifyAcessAdmin from "../middleware/verifyAcessAdmin.js"
 
 
 const prisma = new PrismaClient()
@@ -58,6 +59,28 @@ router.post('/login', async (req, res) => {
 
   } catch (err) {
     res.status(500).json({message:'erro'}) //resposta para o front
+  }
+})
+
+router.post('/administrador', async (req, res) => {
+  try {
+    const user = req.body
+    const salt = await bcrypt.genSalt(10) //nivel de encriptação
+    const hashPassword = await bcrypt.hash(user.password, salt) //senha criptografada
+
+    const usuario = await prisma.user.create({
+      data: {
+        name: user.name,
+        email: user.email,
+        password: hashPassword,
+        role: user.role  
+      }
+    })
+    res.status(200).json(usuario) //resposta para o front
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({message:'erro'}) //resposta para o front
+
   }
 })
 
