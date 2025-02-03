@@ -6,7 +6,6 @@ const auth = (req, res, next) => {//next é a aprovação para continuar a aplic
 
   const token = req.headers.authorization
 
-
    if (!token) {
      return res.status(401).json({message: 'acesso negado'})
    }

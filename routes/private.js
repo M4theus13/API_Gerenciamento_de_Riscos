@@ -11,6 +11,7 @@ router.get('/listar', async (req, res) => {
         id: true,
         name: true,
         email: true,
+        isAdmin: true,
         // Sem o campo de senha
       }
     }) //esconde as informações (esconde o password)
@@ -22,10 +23,30 @@ router.get('/listar', async (req, res) => {
   }
 })
 
-router.put('/admin/:id', async (req, res) => {
-  const { id } = req.params
-  console.log(`Recebido pedido para tornar admin o usuário com ID: ${id}`) // Log do ID recebido
+router.put('/info-user/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const user = await prisma.user.findMany({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isAdmin: true,
+        // Sem o campo de senha
+      }
+    }) //esconde as informações (esconde o password)
+    res.status(200).json({message: 'usuarios listados', user})
+    console.log(user)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+  }
+})
 
+
+router.put('/up-admin/:id', async (req, res) => {
+  const { id } = req.params
   try {
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -35,6 +56,20 @@ router.put('/admin/:id', async (req, res) => {
   } catch (err) {
     console.log(err.message)
     res.status(500).json({ message: 'Falha ao atualizar usuário' })
+  }
+})
+
+router.put('/del-admin/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { isAdmin: false }
+    })
+    res.status(200).json({ message: 'Administrador removido', updatedUser })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).json({ message: 'Falha ao atualizar administrador' })
   }
 })
 
