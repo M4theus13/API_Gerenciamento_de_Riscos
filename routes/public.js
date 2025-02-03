@@ -73,7 +73,7 @@ router.post('/administrador', async (req, res) => {
         name: user.name,
         email: user.email,
         password: hashPassword,
-        role: user.role  
+        isAdmin: user.isAdmin
       }
     })
     res.status(200).json(usuario) //resposta para o front
