@@ -62,4 +62,17 @@ router.put('/del-admin/:id', async (req, res) => {
   }
 })
 
+router.put('/delete-user/:id', async (req, res) => {
+  const { id } = req.params
+  try {
+    const deletedUser = await prisma.user.delete({
+      where: { id }
+    })
+    res.status(200).json({ message: 'Usuário deletado', deletedUser })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).json({ message: 'Falha ao deletar usuário' })
+  }
+})
+
 export default router
