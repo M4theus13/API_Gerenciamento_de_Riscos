@@ -1,15 +1,19 @@
+import jwt from 'jsonwebtoken'
 
 const verifyAcessAdmin =  (req, res, next) => {
-  const VALIDATE_CODE = 'segredo123'
 
-  
-  if (false !== VALIDATE_CODE) {
-    console.log(req.body)
-    console.log(VALIDATE_CODE)
-    return res.status(403).json({ message: 'Acesso negado. Código inválido.' });
+  const token = req.header('Authorization').replace('Bearer ', '');
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // console.log(decoded) //mostra o id do usuario e se ele é admin, essa info vem do token
+    if (!decoded.admin) {
+      return res.status(401).json({message: 'Acesso negado!'})
+    }
+  }catch (err) {
+    return res.status(401).json({message: 'Token invalido'})
   }
-
   next()
+
 }
 
 export default verifyAcessAdmin
