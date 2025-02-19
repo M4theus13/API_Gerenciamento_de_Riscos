@@ -62,6 +62,23 @@ router.post('/login', async (req, res) => {
   }
 })
 
+router.post('/user', async(req, res) => {
+  try {
+    const { email } = req.body
+    const findUser = await prisma.user.findMany({
+      where: { email }
+    })
+
+    if (findUser.length === 0) {
+      return res.status(200).json({ message: 'usuario não encontrado' });
+    }
+    res.status(200).json(findUser)
+  } catch (err) {
+    console.log(err + 'erro no back')
+    res.status(500).json({message:'erro'})
+  }
+})
+
 router.post('/administrador', async (req, res) => {
   try {
     const user = req.body
