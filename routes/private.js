@@ -51,6 +51,24 @@ router.put('/edit-name-user/:id', async (req, res) => {
   }
 })
 
+//usuario alterar seu email
+router.put('/edit-email-user/:id', async (req, res) => {
+  const newEmail = req.body.newEmail
+  try {
+    const id = req.params.id
+    await prisma.user.update({
+      where: { id: id},
+      data : {
+        email: newEmail
+      }
+    })
+    res.status(200).json({message:'Nome Alterado com sucesso'})
+  } catch(err) {
+    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+  }
+})
+
+
 
 
 export default router

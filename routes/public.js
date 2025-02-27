@@ -70,7 +70,7 @@ router.post('/user', async(req, res) => {
     })
 
     if (findUser.length === 0) {
-      return res.status(200).json({ message: 'usuario não encontrado' });
+      return res.status(201).json({ message: 'usuario não encontrado' });
     }
     res.status(200).json(findUser)
   } catch (err) {
