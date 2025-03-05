@@ -1,5 +1,6 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
 
 const router = express.Router()
 const prisma = new PrismaClient()
@@ -62,13 +63,41 @@ router.put('/edit-email-user/:id', async (req, res) => {
         email: newEmail
       }
     })
-    res.status(200).json({message:'Nome Alterado com sucesso'})
+    res.status(200).json({message:'Email Alterado com sucesso'})
   } catch(err) {
     res.status(500).json({message:'falha no servidor'}) //resposta para o front
   }
 })
 
+//usuario alterar sua senha
+router.put('/edit-password-user/:id', async (req, res) => {
+  const newPassword = req.body.newPassword
+  try {
+    const id = req.params.id
+    const salt = await bcrypt.genSalt(10) //nivel de encriptação
+    const hashPassword = await bcrypt.hash(newPassword, salt) //senha criptografada
+    await prisma.user.update({
+      where: { id: id},
+      data : {
+        password: hashPassword
+      }
+    })
+    res.status(200).json({message:'Senha Alterado com sucesso'})
+  } catch(err) {
+    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+  }
+})
 
-
+router.delete('/edit-delete-user/:id', async (req, res) => {
+  try {
+    const id = req.params.id
+    await prisma.user.delete({
+      where: { id: id},
+    })
+    res.status(200).json({message:'Conta deletada com sucesso'})
+  } catch(err) {
+    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+  }
+})
 
 export default router
