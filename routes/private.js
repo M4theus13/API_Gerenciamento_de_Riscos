@@ -88,6 +88,7 @@ router.put('/edit-password-user/:id', async (req, res) => {
   }
 })
 
+//excluir sua propria conta
 router.delete('/edit-delete-user/:id', async (req, res) => {
   try {
     const id = req.params.id
@@ -99,5 +100,75 @@ router.delete('/edit-delete-user/:id', async (req, res) => {
     res.status(500).json({message:'falha no servidor'}) //resposta para o front
   }
 })
+
+//Rota para verificar se o email recebido é o mesmo do usuario
+router.post('/verify-email/:id', async(req, res) => {
+  try {
+    const id = req.params.id
+    const email = req.body
+    const emailUser = await prisma.user.findMany({
+      where: { id : id },
+      select:  { email : true }
+    })
+
+    if (emailUser.length === 0) {
+      return res.status(201).json({ message: 'usuario não encontrado' });
+    }
+
+    if (emailUser[0].email !== email.email) {
+      return res.status(201).json({ message: 'email não encontrado', emailUser})
+    }
+    res.status(200).json(emailUser)
+  } catch (err) {
+    console.log(err + 'erro no back')
+    res.status(500).json({message:'erro'})
+  }
+})
+
+//Rota para verificar se o password recebido é o mesmo do usuario
+router.post('/verify-password/:id', async(req, res) => {
+  try {
+    const id = req.params.id
+    const password = req.body
+    const passwordUser = await prisma.user.findMany({
+      where: { id : id },
+      select:  { password : true }
+    })
+    console.log(passwordUser[0].password)
+    console.log(password.password)
+
+    const isMatch = bcrypt.compare(password.password, passwordUser[0].password)
+    
+    if (isMatch) {
+      console.log('senha corresponde')
+      return res.status(200).json({ message: 'senha corresponde'})
+    } else {
+      return res.status(201).json({ message: 'senha não corresponde'})
+    }
+  } catch (err) {
+    console.log(err + 'erro no back')
+    res.status(500).json({message:'erro'})
+  }
+})
+
+// rota não utilizada
+router.post('/return-email/:id', async(req, res) => {
+  try {
+    const id = req.params.id
+    const emailUser = await prisma.user.findMany({
+      where: { id : id },
+      select:  { email : true }
+    })
+
+    if (emailUser.length === 0) {
+      return res.status(201).json({ message: 'usuario não encontrado' });
+    }
+    res.status(200).json(emailUser)
+  } catch (err) {
+    console.log(err + 'erro no back')
+    res.status(500).json({message:'erro'})
+  }
+})
+// rota não utilizada
 
 export default router
