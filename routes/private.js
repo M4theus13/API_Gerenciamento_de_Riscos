@@ -110,15 +110,40 @@ router.post('/verify-email/:id', async(req, res) => {
       where: { id : id },
       select:  { email : true }
     })
-
+    console.log(emailUser[0].email)
+    console.log(email.email)
     if (emailUser.length === 0) {
       return res.status(201).json({ message: 'usuario não encontrado' });
     }
 
     if (emailUser[0].email !== email.email) {
-      return res.status(201).json({ message: 'email não encontrado', emailUser})
+      return res.status(201).json({ message: 'email não corresponde'})
     }
-    res.status(200).json(emailUser)
+    res.status(200).json()
+  } catch (err) {
+    console.log(err + 'erro no back')
+    res.status(500).json({message:'erro'})
+  }
+})
+
+//Rota para verificar se o novo email recebido já existe
+router.post('/verify-new-email/:id', async(req, res) => {
+  try {
+    const id = req.params.id
+    const newEmail= req.body
+    const emailDB = await prisma.user.findMany({
+      where: { email : newEmail.email },
+      select:  { email : true }
+    })
+    console.log(newEmail.email)
+    console.log(emailDB[0].email)
+
+    if (emailDB.length === 0) {
+      return res.status(200).json({ message: 'email não esta cadastrado no banco' });
+    } else {
+      return res.status(201).json({message: 'email já cadastrado'})
+    }
+    
   } catch (err) {
     console.log(err + 'erro no back')
     res.status(500).json({message:'erro'})
@@ -137,14 +162,16 @@ router.post('/verify-password/:id', async(req, res) => {
     console.log(passwordUser[0].password)
     console.log(password.password)
 
-    const isMatch = bcrypt.compare(password.password, passwordUser[0].password)
-    
-    if (isMatch) {
-      console.log('senha corresponde')
-      return res.status(200).json({ message: 'senha corresponde'})
-    } else {
+
+    const isMatch = await bcrypt.compare(password.password, passwordUser[0].password)
+
+    if (!isMatch) {
+      console.log('senha não corresponde')
       return res.status(201).json({ message: 'senha não corresponde'})
     }
+
+    console.log('senha corresponde')
+    return res.status(200).json({ message: 'senha corresponde'})
   } catch (err) {
     console.log(err + 'erro no back')
     res.status(500).json({message:'erro'})
