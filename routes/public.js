@@ -43,13 +43,15 @@ router.post('/login', async (req, res) => {
     
     //verifica se o usuario existe
     if (!user) {
-      return res.status(404).json({message: "Usuario não encontrado"})
+      console.log('usuario não encontrado')
+      return res.status(201).json({message: "Usuario não encontrado"})
     }
     const isMatch = await bcrypt.compare(userInfo.password, user.password)
 
     //verifica se a senha esta correta
     if (!isMatch) {
-      return res.status(404).json({message: "Senha invalida!"})
+      console.log('senha invalida')
+      return res.status(201).json({message: "Senha invalida!"})
     }
 
     //gerar o token jwt

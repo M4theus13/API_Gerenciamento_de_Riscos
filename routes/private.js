@@ -5,7 +5,27 @@ import bcrypt from 'bcrypt'
 const router = express.Router()
 const prisma = new PrismaClient()
 
-router.put('/info-user/:id', async (req, res) => { //rota para retornar quem é o usuario logado
+//rota para puxar informações do usuario logado
+router.get('/me', async (req, res) => { 
+  const id = req.params.id
+  try {
+    const userLogado = await prisma.user.findMany({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isAdmin: true,
+      }
+    }) 
+    res.status(200).json({message: 'usuarios listados', userLogado})
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+  }
+})//rota para retornar quem é o usuario logado
+
+router.put('/users/:id', async (req, res) => { //rota para retornar quem é o usuario logado
   const id = req.params.id
   try {
     const userLogado = await prisma.user.findMany({
@@ -110,8 +130,8 @@ router.post('/verify-email/:id', async(req, res) => {
       where: { id : id },
       select:  { email : true }
     })
-    console.log(emailUser[0].email)
-    console.log(email.email)
+    console.log(emailUser[0].email, '| email do banco de dados')
+    console.log(email.email, '| email recebido')
     if (emailUser.length === 0) {
       return res.status(201).json({ message: 'usuario não encontrado' });
     }
@@ -127,25 +147,24 @@ router.post('/verify-email/:id', async(req, res) => {
 })
 
 //Rota para verificar se o novo email recebido já existe
-router.post('/verify-new-email/:id', async(req, res) => {
+router.post('/verify-new-email', async(req, res) => {
   try {
-    const id = req.params.id
     const newEmail= req.body
     const emailDB = await prisma.user.findMany({
-      where: { email : newEmail.email },
+      where: { email : newEmail.emailNew },
       select:  { email : true }
     })
-    console.log(newEmail.email)
-    console.log(emailDB[0].email)
+    console.log(newEmail.emailNew, '| novo email recebido')
+    console.log(emailDB, '| emails do banco de dados')
 
     if (emailDB.length === 0) {
+      console.log('email não cadastrado, pode ser utilizado')
       return res.status(200).json({ message: 'email não esta cadastrado no banco' });
-    } else {
-      return res.status(201).json({message: 'email já cadastrado'})
     }
-    
+    console.log('email já cadastrado, não pode ser utilizado')
+    return res.status(201).json({message: 'email já cadastrado'})
   } catch (err) {
-    console.log(err + 'erro no back')
+    console.log(err + 'erro no backa')
     res.status(500).json({message:'erro'})
   }
 })
