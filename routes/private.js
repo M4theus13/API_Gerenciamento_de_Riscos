@@ -6,7 +6,7 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 //rota para puxar informações do usuario logado
-router.put('/me/:id', async (req, res) => { 
+router.get('/me/:id', async (req, res) => { 
   const id = req.params.id
   try {
     const userLogado = await prisma.user.findMany({
@@ -16,6 +16,7 @@ router.put('/me/:id', async (req, res) => {
         name: true,
         email: true,
         isAdmin: true,
+        accountActive: true
       }
     }) 
     res.status(200).json({message: 'usuario', userLogado})
@@ -45,6 +46,7 @@ router.put('/users/:id', async (req, res) => { //rota para retornar quem é o us
         name: true,
         email: true,
         isAdmin: true,
+        accountActive: true
       }
     })
     res.status(200).json({message: 'usuarios listados', userLogado, usersInfo})
