@@ -9,7 +9,7 @@ import auth from '../middleware/auth.js'
 const app = express()
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({ origin: 'https://m4theus13.github.io' }))
 
 // criar usuarios atualizados
 app.use('/usuarios', publicRoutes)
