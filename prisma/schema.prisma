@@ -16,7 +16,7 @@ datasource db {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   isAdmin   Boolean  @default(false)
-  accountActive Boolean @default(false)
+  accountActive Boolean @default(false) @map("accountActive")
   name      String
   email     String   @unique
   password  String
