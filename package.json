@@ -2,9 +2,13 @@
   "name": "projeto_gerenciamento_de_riscos",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "build": "npm install && npm run prisma:generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
