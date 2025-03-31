@@ -17,6 +17,10 @@ app.use(cors({
   credentials: true // Se usar cookies ou tokens
 }));
 
+app.get('/', (req, res) => {
+  res.send('API funcionando! 🚀');
+});
+
 // criar usuarios atualizados
 app.use('/usuarios', publicRoutes)
 app.use('/admin', auth , adminRoutes)
