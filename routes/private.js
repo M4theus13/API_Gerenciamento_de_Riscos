@@ -23,7 +23,7 @@ router.get('/me/:id', async (req, res) => {
     res.status(200).json({message: 'usuario', userLogado})
   } catch (err) {
     console.log(err)
-    res.status(500).json({message:'falha no servidor'}) //resposta para o front
+    res.status(500).json({message:'Erro ao retornar usuario'}) //resposta para o front
   }
 })//rota para retornar quem é o usuario logado
 

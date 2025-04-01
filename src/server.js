@@ -7,24 +7,29 @@ import dotenv from 'dotenv';
 
 import auth from '../middleware/auth.js'
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-console.log("Ambiente:", process.env.NODE_ENV);
+dotenv.config({   path: process.env.NODE_ENV === 'production' 
+  ? '.env.production' 
+  : '.env.development' });
+
+console.log('Ambiente:', process.env.NODE_ENV);
+console.log('DB URL:', process.env.DATABASE_URL);
 const app = express()
-
-
-
-app.use(express.json())
 
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? ['https://m4theus13.github.io']
-  : ['https://m4theus13.github.io', 'http://localhost:3000'];
+  : ['http://localhost:5173']; // Apenas a origem do front em desenvolvimento
 
 app.use(cors({
   origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Se usar cookies ou tokens
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Adicione OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin'], // Adicione Origin
+  credentials: true
 }));
+
+app.use(express.json())
+
+// Adicione tratamento explícito para requisições OPTIONS
+app.options('*', cors());
 
 app.get('/', (req, res) => {
   res.send('API funcionando! 🚀');
@@ -32,7 +37,7 @@ app.get('/', (req, res) => {
 
 app.use('/usuarios', publicRoutes)
 app.use('/admin', auth , adminRoutes)
-app.use('/private',auth, privateRoutes )
+app.use('/',auth, privateRoutes )
 
 
 console.log(process.env.NODE_ENV)

@@ -8,8 +8,6 @@ import verifyAcessAdmin from "../middleware/verifyAcessAdmin.js"
 const prisma = new PrismaClient()
 const router = express.Router()
 
-const JWT_SECRET = process.env.JWT_SECRET
-
 // ROTA criar usuarios
 router.post('/cadastro', async (req, res) => {
   try {
@@ -55,11 +53,12 @@ router.post('/login', async (req, res) => {
     }
 
     //gerar o token jwt
-    const token = jwt.sign({id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin, accountActive: user.accountActive, avatarURL: user.avatarURL}, JWT_SECRET, {expiresIn:'7d'})
+    const token = jwt.sign({id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin, accountActive: user.accountActive, avatarURL: user.avatarURL}, process.env.JWT_SECRET, {expiresIn:'7d'})
 
     res.status(200).json(token)
 
   } catch (err) {
+    console.log(err)
     res.status(500).json({message:'erro'}) //resposta para o front
   }
 })
