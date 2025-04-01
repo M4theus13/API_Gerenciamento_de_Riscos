@@ -8,6 +8,8 @@
     "dev": "cross-env NODE_ENV=development nodemon ./src/server.js",
     "prisma:generate": "dotenv -e .env.development -- prisma generate",
     "prisma:studio": "dotenv -e .env.development -- prisma studio",
+    "prisma:generate:prod": "dotenv -e .env.development -- prisma generate",
+    "prisma:studio:prod": "dotenv -e .env.production -- prisma studio",
     "prisma:migrate": "prisma migrate deploy",
     "build": "npm install && npm run prisma:generate",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,7 +23,6 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "dotenv-cli": "^8.0.0",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.9"
