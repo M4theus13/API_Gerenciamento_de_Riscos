@@ -4,7 +4,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./src/server.js",
+    "start": "npx prisma db push && cross-env NODE_ENV=production node ./src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/server.js",
     "prisma:generate": "dotenv -e .env.development -- prisma generate",
     "prisma:studio": "dotenv -e .env.development -- prisma studio",
