@@ -20,5 +20,5 @@ model User {
   name      String
   email     String   @unique
   password  String
-  avatarURL String  @default("/images/default-avatar-user.jpg") 
+  avatarURL String  @default("images/default-avatar-user.jpg") 
 }
