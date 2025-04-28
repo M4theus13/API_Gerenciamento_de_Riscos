@@ -30,19 +30,19 @@ router.get('/me/:id', async (req, res) => {
 router.put('/users/:id', async (req, res) => { //rota para retornar quem é o usuario logado
   const id = req.params.id
   try {
-    const userLogado = await prisma.user.findMany({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        isAdmin: true,
-        accountActive: true,
-        avatarURL: true
-      }
-    }) 
+    // const userLogado = await prisma.user.findMany({ rota users nao vai mais mandar o usuario logado
+    //   where: { id },
+    //   select: {
+    //     id: true,
+    //     name: true,
+    //     email: true,
+    //     isAdmin: true,
+    //     accountActive: true,
+    //     avatarURL: true
+    //   }
+    // }) 
 
-    const usersInfo = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where: { id: {not :id} },
       select: {
         id: true,
@@ -53,7 +53,7 @@ router.put('/users/:id', async (req, res) => { //rota para retornar quem é o us
         avatarURL: true
       }
     })
-    res.status(200).json({message: 'usuarios listados', userLogado, usersInfo})
+    res.status(200).json({message: 'usuarios listados', users})
   } catch (err) {
     console.log(err)
     res.status(500).json({message:'falha no servidor'}) //resposta para o front
